@@ -18,7 +18,7 @@ class CartScreen extends StatelessWidget {
     final cart = Provider.of<Cart>(context);
     final cartItems = cart.items;
 
-    final orders = Provider.of<Orders>(context,listen: false );
+    final orders = Provider.of<Orders>(context, listen: false);
 
     return Scaffold(
       drawer: AppDrawers(),
@@ -39,24 +39,30 @@ class CartScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 20),
                   ),
                   Spacer(),
-                  Chip(
-                    label: Text('\$ ${cart.totalSum.toStringAsFixed(3)}',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context)
-                                .primaryTextTheme
-                                .title
-                                .color)),
-                    backgroundColor:
-                        Theme.of(context).primaryColor.withOpacity(0.5),
+                  Container( 
+                    width: 140,
+                                      child: FittedBox(
+                      fit:BoxFit.fitWidth,
+                      child: Chip(
+                        label: Text('\$ ${cart.totalSum.toStringAsFixed(3)}',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Theme.of(context)
+                                    .primaryTextTheme
+                                    .title
+                                    .color)),
+                        backgroundColor:
+                            Theme.of(context).primaryColor.withOpacity(0.5),
+                      ),
+                    ),
                   ),
                   FlatButton(
                     child: Text('ORDER NOW'),
                     onPressed: () {
                       orders.addOrder(
                           cart.items.values.toList(), cart.totalSum);
-                          cart.clear();
-                          Navigator.of(context).pushNamed(OrdersScreen.nameRoute);
+                      cart.clear();
+                      Navigator.of(context).pushNamed(OrdersScreen.nameRoute);
                     },
                     textColor: Theme.of(context).primaryColor,
                   )
