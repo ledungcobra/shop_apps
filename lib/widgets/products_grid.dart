@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class ProductsGrid extends StatelessWidget {
   bool showFavs;
-  ProductsGrid(this.showFavs) {}
+  ProductsGrid(this.showFavs);
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);

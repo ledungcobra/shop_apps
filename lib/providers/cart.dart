@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class CartItem {
   final String id;
@@ -16,6 +18,9 @@ class CartItem {
 
 class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
+  final  String authToken;
+  Cart(this.authToken,this._items);
+
   Map<String, CartItem> get items {
     return {..._items};
   }
@@ -32,20 +37,44 @@ class Cart with ChangeNotifier {
     return sum;
   }
 
-  void removeItem(String id) {
-    _items.remove(id);
-    notifyListeners();
+  Future<void> removeItem(String id)  async{
+
+    final String url = 'https://shopapps-31411.firebaseio.com/cart/$id.json?auth=$authToken';
+    var backupItem = _items[id];
+
+
+
+    try{
+      await http.delete(url);
+      _items.remove(id);
+      backupItem = null;
+      notifyListeners();
+    }catch(e){
+      _items.putIfAbsent(id, ()=>backupItem);
+      throw e;
+
+    }
+  
   }
 
-  void removeSingleItem(String productId) {
+  Future<void> removeSingleItem(String productId) async{
+    final String url = 'https://shopapps-31411.firebaseio.com/cart/$productId.json?auth=$authToken';
     if(!_items.containsKey(productId)){
         return;
     }
     if (_items[productId].quantity == 1) {
+      final response =  await http.delete(url);
+      final backupItem = _items[productId];    
+
       _items.removeWhere((key, _) {
         return key == productId;
       });
+      notifyListeners();
+      if(response.statusCode>=400){
+        _items.putIfAbsent(productId, ()=>backupItem);
+      }
     } else {
+      
       _items.update(
           productId,
           (prev) => CartItem(

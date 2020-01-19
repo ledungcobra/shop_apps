@@ -10,7 +10,7 @@ class CartScreen extends StatelessWidget {
   //const CartScreen({Key key}) : sup//er(key: key);
   static const String nameRoute = '/CartScreen';
   CartScreen() {
-    print("calue");
+   
   }
 
   @override
@@ -56,16 +56,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  FlatButton(
-                    child: Text('ORDER NOW'),
-                    onPressed: () {
-                      orders.addOrder(
-                          cart.items.values.toList(), cart.totalSum);
-                      cart.clear();
-                      Navigator.of(context).pushNamed(OrdersScreen.nameRoute);
-                    },
-                    textColor: Theme.of(context).primaryColor,
-                  )
+                  OrderButton(cart: cart, orders: orders)
                 ],
               ),
             ),
@@ -87,6 +78,47 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+    @required this.orders,
+  }) : super(key: key);
+
+  final Cart cart;
+  final Orders orders;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: isLoading?CircularProgressIndicator():Text('ORDER NOW'),
+      onPressed:(widget.cart.totalSum<=0||isLoading) ?null:() async {
+        setState(() {
+          isLoading = true;
+        });
+
+        await widget.orders.addOrder(
+            widget.cart.items.values.toList(), widget.cart.totalSum);
+        widget.cart.clear();
+
+        setState(() {
+          isLoading = false;
+          
+        });
+        Navigator.of(context).pushNamed(OrdersScreen.nameRoute);
+      },
+      textColor: Theme.of(context).primaryColor,
     );
   }
 }

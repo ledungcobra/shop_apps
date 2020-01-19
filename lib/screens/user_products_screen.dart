@@ -9,7 +9,7 @@ class UserProductsScreen extends StatelessWidget {
   //const UserProductsScreen({Key key}) : super(key: key);
   static const String nameRoute = '/userProductsScreen';
   Future<void> refreshProduct(BuildContext context) async {
-    await Provider.of<Products>(context).fetchAndSetProducts();
+    await Provider.of<Products>(context,listen: false).fetchAndSetProducts();
   }
 
   @override

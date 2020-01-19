@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/providers/auth.dart';
 import '../providers/cart.dart';
 import '../providers/product.dart';
 import '../screens/product_detail_screen.dart';
@@ -27,7 +28,8 @@ class ProductItem extends StatelessWidget {
                 color: Colors.red,
               ),
               onPressed: () {
-                product.toggleFavorite();
+                final auth = Provider.of<Auth>(context,listen: false);
+                product.toggleFavorite(auth.token,auth.userId);
               },
               color: Theme.of(context).accentColor,
             ),

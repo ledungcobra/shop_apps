@@ -87,7 +87,7 @@ class _ProductOverViewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
-      body: !_isLoaded
+      body: _isLoaded
           ? ProductsGrid(_showFavorites)
           : Center(
               child: CircularProgressIndicator(
